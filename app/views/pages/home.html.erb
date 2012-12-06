@@ -1,0 +1,42 @@
+<div class="main_container">
+<h1 class="header">FRIEND.BS</h1>
+</div>
+
+<h2> There are <%= @videos.count%> videos: </h2> 
+<hr />
+
+<ul>
+  <% @videos.each_with_index do |post,idx| %>
+  <% img = "http://graph.facebook.com/#{post['from']['id']}/picture" %>
+  <li>[<%= idx+1 %>]: <%= image_tag (img) %> <%= post["from"]["name"] %> posted...
+    <p>Title: <%= post["name"]%></p>
+    <p>
+      <% if post["source"].scan("youtube") == ["youtube"] %>
+        <% clean_source = post["source"].gsub(/\?.*/, '')%>
+        <iframe class="youtube-player" type="text/html" width="640" height="385" src='<%=clean_source%>' frameborder="0"> </iframe>
+        </br>
+        <% else%>
+        <video width="640" height="385" controls="controls">
+          <source src='<%= post["source"] %>'>
+          Your browser does not support the video tag.
+        </video>
+        </br>
+      <% end %>
+    </p>
+    <p>Description: <%= post["message"]%></p>  
+    <% if post["comments"]["count"] > 0 %>
+     Comments: </br>
+     <% if post["comments"]["data"] != nil%>
+       <% post["comments"]["data"].each do |comment| %>
+         <%= image_tag "http://graph.facebook.com/#{comment["from"]["id"]}/picture"%> <b><%= comment["from"]["name"]%></b>: <%= comment["message"]%> </br>
+     <% end %>
+     <% end %>
+    <% else %>
+    No one loves the video. :(
+    <% end %>
+  </li>
+  <hr />  
+  <% end %>
+</ul>
+
+<%= @videos%>
